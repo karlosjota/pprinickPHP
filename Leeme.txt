@@ -9,6 +9,11 @@ Canal Youtube: Prinick Narváez Tutoriales
 
 	Enlace del trabajo:
 https://github.com/karlosjota/pprinickPHP
+ paypal:
+ https://developer.paypal.com/docs/classic/lifecycle/sdks/
+ phpmailer:
+ https://packagist.org/packages/phpmailer/phpmailer
+ 
 // crear direcotorios en atom y clonar en github
 // descargar archivos de OcrendBB
 // crear permisos de escritura
