@@ -1,5 +1,44 @@
+IMPORTANT
+
+Please duplicate this radar for a Safari fix! 
+This will clean up a 50-line workaround.
+
+  rdar://22376037 (https://openradar.appspot.com/radar?id=4965070979203072)
+
+//////////////////////////////////////////////////////////////////////////////
+
+(Now available as a standalone repo.)
+
+//////////////////////////////////////////////////////////////////////////////
+
+UPDATE: THIS PROJECT MOVED TO A NEW ADDRESS:
+
+https://github.com/galambalazs/smoothscroll-for-websites
+
+//////////////////////////////////////////////////////////////////////////////
+
+UPDATE: THIS PROJECT MOVED TO A NEW ADDRESS:
+
+https://github.com/galambalazs/smoothscroll-for-websites
+
+//////////////////////////////////////////////////////////////////////////////
+
+UPDATE: THIS PROJECT MOVED TO A NEW ADDRESS:
+
+https://github.com/galambalazs/smoothscroll-for-websites
+
+//////////////////////////////////////////////////////////////////////////////
+
+
 //
-// SmoothScroll for websites v1.4.0 (Balazs Galambosi)
+// I'll leave the old code below for historical purposes. 
+// But this gist will no longer be updated.
+// For the up-to-date version, use the link above!
+//
+
+
+//
+// SmoothScroll for websites v1.3.8 (Balazs Galambosi)
 // http://www.smoothscroll.net/
 //
 // Licensed under the terms of the MIT license.
@@ -8,7 +47,7 @@
 // It is also free to use on any individual website.
 //
 // Exception:
-// The only restriction is to not publish any  
+// The only restriction would be not to publish any  
 // extension for browsers or native application
 // without getting a written permission first.
 //
@@ -21,7 +60,7 @@ var defaultOptions = {
     // Scrolling Core
     frameRate        : 150, // [Hz]
     animationTime    : 400, // [ms]
-    stepSize         : 100, // [px]
+    stepSize         : 120, // [px]
 
     // Pulse (less tweakable)
     // ratio of "tail" to "acceleration"
@@ -30,15 +69,15 @@ var defaultOptions = {
     pulseNormalize   : 1,
 
     // Acceleration
-    accelerationDelta : 50,  // 50
-    accelerationMax   : 3,   // 3
+    accelerationDelta : 20,  // 20
+    accelerationMax   : 1,   // 1
 
     // Keyboard Settings
     keyboardSupport   : true,  // option
-    arrowScroll       : 50,    // [px]
+    arrowScroll       : 50,     // [px]
 
     // Other
-    touchpadSupport   : false, // ignore touchpad by default
+    touchpadSupport   : true,
     fixedBackground   : true, 
     excluded          : ''    
 };
@@ -54,12 +93,18 @@ var initDone  = false;
 var root = document.documentElement;
 var activeElement;
 var observer;
-var refreshSize;
 var deltaBuffer = [];
 var isMac = /^Mac/.test(navigator.platform);
 
 var key = { left: 37, up: 38, right: 39, down: 40, spacebar: 32, 
             pageup: 33, pagedown: 34, end: 35, home: 36 };
+
+
+/***********************************************
+ * SETTINGS
+ ***********************************************/
+
+var options = defaultOptions;
 
 
 /***********************************************
@@ -101,11 +146,6 @@ function init() {
     }
 
     /**
-     * Please duplicate this radar for a Safari fix! 
-     * rdar://22376037
-     * https://openradar.appspot.com/radar?id=4965070979203072
-     * 
-     * Only applies to Safari now, Chrome fixed it in v45:
      * This fixes a bug where the areas left and right to 
      * the content does not trigger the onmousewheel event
      * on some pages. e.g.: html, body { height: 100% }
@@ -122,7 +162,7 @@ function init() {
         
         // DOM changed (throttled) to fix height
         var pendingRefresh;
-        refreshSize = function () {
+        var refresh = function () {
             if (pendingRefresh) return; // could also be: clearTimeout(pendingRefresh);
             pendingRefresh = setTimeout(function () {
                 if (isExcluded) return; // could be running after cleanup
@@ -132,9 +172,7 @@ function init() {
             }, 500); // act rarely to stay fast
         };
   
-        setTimeout(refreshSize, 10);
-
-        addEvent('resize', refreshSize);
+        setTimeout(refresh, 10);
 
         // TODO: attributeFilter?
         var config = {
@@ -144,7 +182,7 @@ function init() {
             // subtree: true
         };
 
-        observer = new MutationObserver(refreshSize);
+        observer = new MutationObserver(refresh);
         observer.observe(body, config);
 
         if (root.offsetHeight <= windowHeight) {
@@ -169,8 +207,6 @@ function cleanup() {
     removeEvent(wheelEvent, wheel);
     removeEvent('mousedown', mousedown);
     removeEvent('keydown', keydown);
-    removeEvent('resize', refreshSize);
-    removeEvent('load', init);
 }
 
 
@@ -620,12 +656,12 @@ var getScrollRoot = (function() {
       document.body.appendChild(dummy);
       var bodyScrollTop  = document.body.scrollTop;
       var docElScrollTop = document.documentElement.scrollTop;
-      window.scrollBy(0, 3);
+      window.scrollBy(0, 1);
       if (document.body.scrollTop != bodyScrollTop)
         (SCROLL_ROOT = document.body);
       else 
         (SCROLL_ROOT = document.documentElement);
-      window.scrollBy(0, -3);
+      window.scrollBy(0, -1);
       document.body.removeChild(dummy);
     }
     return SCROLL_ROOT;
@@ -670,52 +706,19 @@ function pulse(x) {
     return pulse_(x);
 }
 
-
-/***********************************************
- * FIRST RUN
- ***********************************************/
-
-var userAgent = window.navigator.userAgent;
-var isEdge    = /Edge/.test(userAgent); // thank you MS
-var isChrome  = /chrome/i.test(userAgent) && !isEdge; 
-var isSafari  = /safari/i.test(userAgent) && !isEdge; 
-var isMobile  = /mobile/i.test(userAgent);
-var isEnabledForBrowser = (isChrome || isSafari) && !isMobile;
-
 var wheelEvent;
 if ('onwheel' in document.createElement('div'))
     wheelEvent = 'wheel';
 else if ('onmousewheel' in document.createElement('div'))
     wheelEvent = 'mousewheel';
 
-if (wheelEvent && isEnabledForBrowser) {
+if (wheelEvent) {
     addEvent(wheelEvent, wheel);
     addEvent('mousedown', mousedown);
     addEvent('load', init);
 }
 
-
-/***********************************************
- * PUBLIC INTERFACE
- ***********************************************/
-
-function SmoothScroll(optionsToSet) {
-    for (var key in optionsToSet)
-        if (defaultOptions.hasOwnProperty(key)) 
-            options[key] = optionsToSet[key];
-}
-SmoothScroll.destroy = cleanup;
-
-if (window.SmoothScrollOptions) // async API
-    SmoothScroll(window.SmoothScrollOptions)
-
-if (typeof define === 'function' && define.amd)
-    define(function() {
-        return SmoothScroll;
-    });
-else if ('object' == typeof exports)
-    module.exports = SmoothScroll;
-else
-    window.SmoothScroll = SmoothScroll;
-
 })();
+
+
+

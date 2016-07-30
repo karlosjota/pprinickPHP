@@ -2,6 +2,61 @@ Recursos del Proyecto:
 
 Canal Youtube: Prinick Narváez Tutoriales
 
-	enlaces:
+	enlace de prinick:
 	https://github.com/prinick96/OcrendBB
+	archivos:
 	http://adf.ly/1UwAin
+
+	Enlace del trabajo:
+https://github.com/karlosjota/pprinickPHP
+// crear direcotorios en atom y clonar en github
+// descargar archivos de OcrendBB
+// crear permisos de escritura
+// Crear carpetas html/ /views core/
+// árbol de directorios:
+
+prinickPHP/
+      OcrendBB/
+						.git
+						/html
+								../index
+										index.php
+								../overall
+										header.php
+										topnav.php
+										footer.php
+								../error
+										ss.php
+						/views
+						  	../app
+					  		../bootstrap
+					  		../fontawesome
+				  			../images
+			  				../jarallax
+			  				../morbirise
+				  			../smooth-scroll
+					  		../socion
+					  		../web
+ 						/core
+ 				  			../controllers
+				  			../libs
+				  			../models
+				  			../controller
+					ajax.php
+					index.php
+					Leeme.txt
+					LICENSE.rm
+					README.md
+
+// descargar fuente de awesome y coolocar en fonts
+// crear BB.DD. en phpmyadmin llamda ocrendbb
+			- tabla users  -utf8_unicode_ci
+						-id    :  BIGNT  - 255 -   PRIMARY - ai
+						-user  : VARCHAR - 17 -
+						-pass  : VARCHAR - 30
+						-email : VARCHAR - 40
+						-permisos : INT  - predeterminado: '0'.
+	// insertar un campo para el registro con el valor '2' en permisos como administrador:
+	INSERT INTO `users` (`id`, `user`, `pass`, `email`, `permisos`) VALUES (NULL, 'prinick', '123456', 'prinick093@gmail.com', '2');
+
+	// Encriptar la pass
